@@ -1,6 +1,4 @@
 /*
-  X-Frame-Options: DENY
-  X-XSS-Protection: 1; mode=block
   Access-Control-Allow-Origin: *,
   Access-Control-Allow-Methods: GET,
   Access-Control-Allow-Headers: X-Requested-With, content-type, Authorization
