@@ -8,7 +8,7 @@ import {
   ModalFooterConfirmation,
   ButtonLink,
 } from '@gnosis.pm/safe-react-components';
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import Box from '@material-ui/core/Box';
 import styled from 'styled-components';
