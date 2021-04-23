@@ -6,7 +6,6 @@ import {
   GenericModal,
   Select,
   ModalFooterConfirmation,
-  ButtonLink,
 } from '@gnosis.pm/safe-react-components';
 import React, { useState, useCallback, useEffect} from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
@@ -54,12 +53,6 @@ const StyledText = styled(Text)`
   margin-bottom: 15px;
 `;
 
-const StyledExamples = styled.div`
-  button {
-    padding: 0;
-  }
-`;
-
 const ModalBody = ({ txs, deleteTx }: { txs: Array<ProposedTransaction>; deleteTx: (index: number) => void }) => {
   return (
     <>
@@ -98,7 +91,6 @@ interface DashboardProps {
 
 const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
   
-  const [showExamplesPos, setShowExamplesPos] = useState(false);
   const [toAddressPos, setToAddressPos] = useState('');
   const [contractPos, setContractPos] = useState<ContractInterface | undefined>(undefined);
   const [reviewingPos, setReviewingPos] = useState(false);
@@ -106,9 +98,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
   const [inputCachePos, setInputCachePos] = useState<string[]>([]);
   const [addTxErrorPos, setAddTxErrorPos] = useState<string | undefined>();
   const [transactionsPos, setTransactionsPos] = useState<ProposedTransaction[]>([]);
-  const [valuePos, setValuePos] = useState('');
 
-  const [showExamplesPlasma, setShowExamplesPlasma] = useState(false);
   const [toAddressPlasma, setToAddressPlasma] = useState('');
   const [contractPlasma, setContractPlasma] = useState<ContractInterface | undefined>(undefined);
   const [reviewingPlasma, setReviewingPlasma] = useState(false);
@@ -116,9 +106,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
   const [inputCachePlasma, setInputCachePlasma] = useState<string[]>([]);
   const [addTxErrorPlasma, setAddTxErrorPlasma] = useState<string | undefined>();
   const [transactionsPlasma, setTransactionsPlasma] = useState<ProposedTransaction[]>([]);
-  const [valuePlasma, setValuePlasma] = useState('');
   
-  const [showExamplesL1L2, setShowExamplesL1L2] = useState(false);
   const [toAddressL1L2, setToAddressL1L2] = useState('');
   const [contractL1L2, setContractL1L2] = useState<ContractInterface | undefined>(undefined);
   const [reviewingL1L2, setReviewingL1L2] = useState(false);
@@ -126,9 +114,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
   const [inputCacheL1L2, setInputCacheL1L2] = useState<string[]>([]);
   const [addTxErrorL1L2, setAddTxErrorL1L2] = useState<string | undefined>();
   const [transactionsL1L2, setTransactionsL1L2] = useState<ProposedTransaction[]>([]);
-  const [valueL1L2, setValueL1L2] = useState('');
 
-  const [showExamplesL2L1, setShowExamplesL2L1] = useState(false);
   const [toAddressL2L1, setToAddressL2L1] = useState('');
   const [contractL2L1, setContractL2L1] = useState<ContractInterface | undefined>(undefined);
   const [reviewingL2L1, setReviewingL2L1] = useState(false);
@@ -136,9 +122,6 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
   const [inputCacheL2L1, setInputCacheL2L1] = useState<string[]>([]);
   const [addTxErrorL2L1, setAddTxErrorL2L1] = useState<string | undefined>();
   const [transactionsL2L1, setTransactionsL2L1] = useState<ProposedTransaction[]>([]);
-  const [valueL2L1, setValueL2L1] = useState('');
-
-
 
   const handleAddressOrABIPos = async (): Promise<ContractInterface | void> => {
     setContractPos(undefined);
@@ -327,7 +310,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
 
     try {
       const cleanTo = web3.utils.toChecksumAddress(toAddressPos);
-      const cleanValue = valuePos.length > 0 ? web3.utils.toWei(valuePos) : 0;
+      const cleanValue = 0;
 
       if (data.length === 0) {
         data = '0x';
@@ -345,11 +328,10 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
       setInputCachePos([]);
       setTransactionsPos(transactionsPos);
       setSelectedMethodIndexPos(0);
-      setValuePos('');
     } catch (e) {
       console.error(e);
     }
-  }, [services, transactionsPos, toAddressPos, valuePos, contractPos, selectedMethodIndexPos, inputCachePos]);
+  }, [services, transactionsPos, toAddressPos, contractPos, selectedMethodIndexPos, inputCachePos]);
 
   const addTransactionPlasma = useCallback(async () => {
     let description = '';
@@ -387,7 +369,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
 
     try {
       const cleanTo = web3.utils.toChecksumAddress(toAddressPlasma);
-      const cleanValue = valuePlasma.length > 0 ? web3.utils.toWei(valuePlasma) : 0;
+      const cleanValue = 0;
 
       if (data.length === 0) {
         data = '0x';
@@ -405,11 +387,10 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
       setInputCachePlasma([]);
       setTransactionsPlasma(transactionsPlasma);
       setSelectedMethodIndexPlasma(0);
-      setValuePlasma('');
     } catch (e) {
       console.error(e);
     }
-  }, [services, transactionsPlasma, toAddressPlasma, valuePlasma, contractPlasma, selectedMethodIndexPlasma, inputCachePlasma]);
+  }, [services, transactionsPlasma, toAddressPlasma, contractPlasma, selectedMethodIndexPlasma, inputCachePlasma]);
 
   const addTransactionL1L2 = useCallback(async () => {
     let description = '';
@@ -447,7 +428,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
 
     try {
       const cleanTo = web3.utils.toChecksumAddress(toAddressL1L2);
-      const cleanValue = valueL1L2.length > 0 ? web3.utils.toWei(valueL1L2) : 0;
+      const cleanValue = 0;
 
       if (data.length === 0) {
         data = '0x';
@@ -465,11 +446,10 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
       setInputCacheL1L2([]);
       setTransactionsL1L2(transactionsL1L2);
       setSelectedMethodIndexL1L2(0);
-      setValueL1L2('');
     } catch (e) {
       console.error(e);
     }
-  }, [services, transactionsL1L2, toAddressL1L2, valueL1L2, contractL1L2, selectedMethodIndexL1L2, inputCacheL1L2]);
+  }, [services, transactionsL1L2, toAddressL1L2, contractL1L2, selectedMethodIndexL1L2, inputCacheL1L2]);
 
   const addTransactionL2L1 = useCallback(async () => {
     let description = '';
@@ -507,7 +487,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
 
     try {
       const cleanTo = web3.utils.toChecksumAddress(toAddressL2L1);
-      const cleanValue = valueL2L1.length > 0 ? web3.utils.toWei(valueL2L1) : 0;
+      const cleanValue = 0;
 
       if (data.length === 0) {
         data = '0x';
@@ -525,11 +505,10 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
       setInputCacheL2L1([]);
       setTransactionsL2L1(transactionsL2L1);
       setSelectedMethodIndexL2L1(0);
-      setValueL2L1('');
     } catch (e) {
       console.error(e);
     }
-  }, [services, transactionsL2L1, toAddressL2L1, valueL2L1, contractL2L1, selectedMethodIndexL2L1, inputCacheL2L1]);
+  }, [services, transactionsL2L1, toAddressL2L1, contractL2L1, selectedMethodIndexL2L1, inputCacheL2L1]);
 
   const deleteTransactionPos = useCallback(
     async (inputIndex: number) => {
@@ -683,7 +662,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
         This app allows you to Map token on Polygon.
       </StyledText>
       <StyledText size="lg">
-        <strong>PoS - [abi - 0xD4888faB8bd39A663B63161F5eE1Eae31a25B653], [rootchainmanagerProxy- 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77]</strong>
+        <strong>PoS - [rootChainManagerProxy- 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77]</strong>
         <br/>
         <br/>
         * erc20TokenType = '0x8ae85d849167ff996c04040c44924fd364217285e4cad818292c7ac37c0a345b'
@@ -746,52 +725,6 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
                       handleMethodPos(Number(id));
                     }}
                   />
-                  <StyledExamples>
-                    <ButtonLink color="primary" onClick={() => setShowExamplesPos((prev) => !prev)}>
-                      {showExamplesPos ? 'Hide Examples' : 'Show Examples'}
-                    </ButtonLink>
-
-                    {showExamplesPos && (
-                      <>
-                        <Text size="sm" strong>
-                          string {'> '}
-                          <Text size="sm" as="span">
-                            some value
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          uint256 {'> '}
-                          <Text size="sm" as="span">
-                            123
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          address {'> '}
-                          <Text size="sm" as="span">
-                            0xDe75665F3BE46D696e5579628fA17b662e6fC04e
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          array {'> '}
-                          <Text size="sm" as="span">
-                            [1,2,3]
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          Tuple(uint256, string) {'> '}
-                          <Text size="sm" as="span">
-                            [1, "someValue"]
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          Tuple(uint256, string)[] {'> '}
-                          <Text size="sm" as="span">
-                            [[1, "someValue"], [2, "someOtherValue"]]
-                          </Text>
-                        </Text>
-                      </>
-                    )}
-                  </StyledExamples>
                 </>
               )}
 
@@ -848,7 +781,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
         <br/>
         <br/>
         <br/>
-        <strong>Plasma - [abi - 0x98165b71cdDea047C0A49413350C40571195fd07], [governance address- 0x6e7a5820baD6cebA8Ef5ea69c0C92EbbDAc9CE48]</strong>
+        <strong>Plasma - [governanceProxy - 0x6e7a5820baD6cebA8Ef5ea69c0C92EbbDAc9CE48]</strong>
         <br/>
         <br/>
         * registery address = '0x33a02E6cC863D393d6Bf231B697b82F6e499cA71'
@@ -902,52 +835,6 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
                       handleMethodPlasma(Number(id));
                     }}
                   />
-                  <StyledExamples>
-                    <ButtonLink color="primary" onClick={() => setShowExamplesPlasma((prev) => !prev)}>
-                      {showExamplesPlasma ? 'Hide Examples' : 'Show Examples'}
-                    </ButtonLink>
-
-                    {showExamplesPlasma && (
-                      <>
-                        <Text size="sm" strong>
-                          string {'> '}
-                          <Text size="sm" as="span">
-                            some value
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          uint256 {'> '}
-                          <Text size="sm" as="span">
-                            123
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          address {'> '}
-                          <Text size="sm" as="span">
-                            0xDe75665F3BE46D696e5579628fA17b662e6fC04e
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          array {'> '}
-                          <Text size="sm" as="span">
-                            [1,2,3]
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          Tuple(uint256, string) {'> '}
-                          <Text size="sm" as="span">
-                            [1, "someValue"]
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          Tuple(uint256, string)[] {'> '}
-                          <Text size="sm" as="span">
-                            [[1, "someValue"], [2, "someOtherValue"]]
-                          </Text>
-                        </Text>
-                      </>
-                    )}
-                  </StyledExamples>
                 </>
               )}
 
@@ -1004,7 +891,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
         <br/>
         <br/>
         <br/>
-        <strong>L1L2 - [abi - 0x28e4F3a7f651294B9564800b2D01f35189A5bFbE], [stateSender- 0x28e4F3a7f651294B9564800b2D01f35189A5bFbE]</strong>
+        <strong>L1L2 - [stateSender- 0x28e4F3a7f651294B9564800b2D01f35189A5bFbE]</strong>
         <br/>
       </StyledText>
 
@@ -1055,52 +942,6 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
                       handleMethodL1L2(Number(id));
                     }}
                   />
-                  <StyledExamples>
-                    <ButtonLink color="primary" onClick={() => setShowExamplesL1L2((prev) => !prev)}>
-                      {showExamplesL1L2 ? 'Hide Examples' : 'Show Examples'}
-                    </ButtonLink>
-
-                    {showExamplesL1L2 && (
-                      <>
-                        <Text size="sm" strong>
-                          string {'> '}
-                          <Text size="sm" as="span">
-                            some value
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          uint256 {'> '}
-                          <Text size="sm" as="span">
-                            123
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          address {'> '}
-                          <Text size="sm" as="span">
-                            0xDe75665F3BE46D696e5579628fA17b662e6fC04e
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          array {'> '}
-                          <Text size="sm" as="span">
-                            [1,2,3]
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          Tuple(uint256, string) {'> '}
-                          <Text size="sm" as="span">
-                            [1, "someValue"]
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          Tuple(uint256, string)[] {'> '}
-                          <Text size="sm" as="span">
-                            [[1, "someValue"], [2, "someOtherValue"]]
-                          </Text>
-                        </Text>
-                      </>
-                    )}
-                  </StyledExamples>
                 </>
               )}
 
@@ -1157,7 +998,7 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
         <br/>
         <br/>
         <br/>
-        <strong>L2L1 - [abi - 0xD4888faB8bd39A663B63161F5eE1Eae31a25B653], [rootchainmanagerProxy- 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77]</strong>
+        <strong>L2L1 - [rootChainManagerProxy- 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77]</strong>
         <br/>
         <br/>
         * tokenType ='0xd2cb9bec761762794c5f1aac30cd08c4b162e1c154230a5c97134039a182238b'
@@ -1210,52 +1051,6 @@ const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
                       handleMethodL2L1(Number(id));
                     }}
                   />
-                  <StyledExamples>
-                    <ButtonLink color="primary" onClick={() => setShowExamplesL2L1((prev) => !prev)}>
-                      {showExamplesL2L1 ? 'Hide Examples' : 'Show Examples'}
-                    </ButtonLink>
-
-                    {showExamplesL2L1 && (
-                      <>
-                        <Text size="sm" strong>
-                          string {'> '}
-                          <Text size="sm" as="span">
-                            some value
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          uint256 {'> '}
-                          <Text size="sm" as="span">
-                            123
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          address {'> '}
-                          <Text size="sm" as="span">
-                            0xDe75665F3BE46D696e5579628fA17b662e6fC04e
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          array {'> '}
-                          <Text size="sm" as="span">
-                            [1,2,3]
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          Tuple(uint256, string) {'> '}
-                          <Text size="sm" as="span">
-                            [1, "someValue"]
-                          </Text>
-                        </Text>
-                        <Text size="sm" strong>
-                          Tuple(uint256, string)[] {'> '}
-                          <Text size="sm" as="span">
-                            [[1, "someValue"], [2, "someOtherValue"]]
-                          </Text>
-                        </Text>
-                      </>
-                    )}
-                  </StyledExamples>
                 </>
               )}
 
