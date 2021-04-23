@@ -6,7 +6,7 @@ import { SafeProvider } from '@gnosis.pm/safe-apps-react-sdk';
 
 import * as serviceWorker from './serviceWorker';
 
-import Dashboard from './components/Dashboard';
+import PreSet from './components/Dashboard';
 import GlobalStyles from './global';
 
 ReactDOM.render(
@@ -14,7 +14,7 @@ ReactDOM.render(
     <GlobalStyles />
     <ThemeProvider theme={theme}>
       <SafeProvider>
-        <Dashboard />
+        <PreSet />
       </SafeProvider>
     </ThemeProvider>
   </>,

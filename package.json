@@ -12,6 +12,7 @@
   "dependencies": {
     "@gnosis.pm/safe-apps-react-sdk": "2.0.0",
     "@gnosis.pm/safe-apps-sdk": "2.0.0",
+    "@maticnetwork/meta": "^2.4.13",
     "lerna": "^3.22.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

@@ -8,7 +8,7 @@ import {
   ModalFooterConfirmation,
   ButtonLink,
 } from '@gnosis.pm/safe-react-components';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect} from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import Box from '@material-ui/core/Box';
 import styled from 'styled-components';
@@ -18,6 +18,22 @@ import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { ProposedTransaction } from '../typings/models';
 import WidgetWrapper from './WidgetWrapper';
+const Network = require('@maticnetwork/meta/network')
+const network = new Network(
+  "mainnet",
+  "v1"
+)
+const posAbi = network.abi('RootChainManager', 'pos');
+const posAddress = network.Main.POSContracts.RootChainManagerProxy
+
+const plasmaAbi = network.abi('Governance')
+const plasmaAddress = network.Main.Contracts.GovernanceProxy
+
+const l1l2Abi = network.abi('StateSender')
+const l1l2Address = network.Main.Contracts.StateSender
+
+const l2l1Abi = network.abi('RootChainManager', 'pos');
+const l2l1Address = network.Main.POSContracts.RootChainManagerProxy
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -66,12 +82,22 @@ const ModalBody = ({ txs, deleteTx }: { txs: Array<ProposedTransaction>; deleteT
   );
 };
 
-const Dashboard = () => {
+const PreSet = () => {
   const { sdk, safe } = useSafeAppsSDK();
   const services = useServices(safe.network);
+  return (
+    <Dashboard services={services} safe={safe} sdk={sdk}></Dashboard>
+  )
+}
 
-  const [addressOrAbiPos, setAddressOrAbiPos] = useState('');
-  const [loadAbiErrorPos, setLoadAbiErrorPos] = useState(false);
+interface DashboardProps {
+  services: any;
+  safe: any;
+  sdk: any;
+}
+
+const Dashboard:React.FC<DashboardProps> = ({services, safe, sdk}) => {
+  
   const [showExamplesPos, setShowExamplesPos] = useState(false);
   const [toAddressPos, setToAddressPos] = useState('');
   const [contractPos, setContractPos] = useState<ContractInterface | undefined>(undefined);
@@ -82,8 +108,6 @@ const Dashboard = () => {
   const [transactionsPos, setTransactionsPos] = useState<ProposedTransaction[]>([]);
   const [valuePos, setValuePos] = useState('');
 
-  const [addressOrAbiPlasma, setAddressOrAbiPlasma] = useState('');
-  const [loadAbiErrorPlasma, setLoadAbiErrorPlasma] = useState(false);
   const [showExamplesPlasma, setShowExamplesPlasma] = useState(false);
   const [toAddressPlasma, setToAddressPlasma] = useState('');
   const [contractPlasma, setContractPlasma] = useState<ContractInterface | undefined>(undefined);
@@ -94,8 +118,6 @@ const Dashboard = () => {
   const [transactionsPlasma, setTransactionsPlasma] = useState<ProposedTransaction[]>([]);
   const [valuePlasma, setValuePlasma] = useState('');
   
-  const [addressOrAbiL1L2, setAddressOrAbiL1L2] = useState('');
-  const [loadAbiErrorL1L2, setLoadAbiErrorL1L2] = useState(false);
   const [showExamplesL1L2, setShowExamplesL1L2] = useState(false);
   const [toAddressL1L2, setToAddressL1L2] = useState('');
   const [contractL1L2, setContractL1L2] = useState<ContractInterface | undefined>(undefined);
@@ -106,8 +128,6 @@ const Dashboard = () => {
   const [transactionsL1L2, setTransactionsL1L2] = useState<ProposedTransaction[]>([]);
   const [valueL1L2, setValueL1L2] = useState('');
 
-  const [addressOrAbiL2L1, setAddressOrAbiL2L1] = useState('');
-  const [loadAbiErrorL2L1, setLoadAbiErrorL2L1] = useState(false);
   const [showExamplesL2L1, setShowExamplesL2L1] = useState(false);
   const [toAddressL2L1, setToAddressL2L1] = useState('');
   const [contractL2L1, setContractL2L1] = useState<ContractInterface | undefined>(undefined);
@@ -122,76 +142,60 @@ const Dashboard = () => {
 
   const handleAddressOrABIPos = async (): Promise<ContractInterface | void> => {
     setContractPos(undefined);
-    setLoadAbiErrorPos(false);
-
-    setAddressOrAbiPos("0xD4888faB8bd39A663B63161F5eE1Eae31a25B653");
-    setToAddressPos("0xA0c68C638235ee32657e8f720a23ceC1bFc77C77")
+    setToAddressPos(posAddress)
 
     if (!services.interfaceRepo) {
       return;
     }
     try {
-      const contract = await services.interfaceRepo.loadAbi("0xD4888faB8bd39A663B63161F5eE1Eae31a25B653");
+      const contract = await services.interfaceRepo.loadAbi(JSON.stringify(posAbi));
       setContractPos(contract);
     } catch (e) {
-      setLoadAbiErrorPos(true);
       console.error(e);
     }
   };
 
-  const handleAddressOrABIPlasma = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
+  const handleAddressOrABIPlasma = async (): Promise<ContractInterface | void> => {
     setContractPlasma(undefined);
-    setLoadAbiErrorPlasma(false);
-
-    setAddressOrAbiPlasma("0x98165b71cdDea047C0A49413350C40571195fd07");
-    setToAddressPlasma("0x6e7a5820baD6cebA8Ef5ea69c0C92EbbDAc9CE48")
+    setToAddressPlasma(plasmaAddress)
 
     if (!services.interfaceRepo) {
       return;
     }
     try {
-      const contract = await services.interfaceRepo.loadAbi("0x98165b71cdDea047C0A49413350C40571195fd07");
+      const contract = await services.interfaceRepo.loadAbi(JSON.stringify(plasmaAbi));
       setContractPlasma(contract);
     } catch (e) {
-      setLoadAbiErrorPlasma(true);
       console.error(e);
     }
   };
 
-  const handleAddressOrABIL1L2 = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
+  const handleAddressOrABIL1L2 = async (): Promise<ContractInterface | void> => {
     setContractL1L2(undefined);
-    setLoadAbiErrorL1L2(false);
-
-    setAddressOrAbiL1L2("0x28e4F3a7f651294B9564800b2D01f35189A5bFbE");
-    setToAddressL1L2("0x28e4F3a7f651294B9564800b2D01f35189A5bFbE")
+    setToAddressL1L2(l1l2Address)
 
     if (!services.interfaceRepo) {
       return;
     }
     try {
-      const contract = await services.interfaceRepo.loadAbi("0x28e4F3a7f651294B9564800b2D01f35189A5bFbE");
+      const contract = await services.interfaceRepo.loadAbi(JSON.stringify(l1l2Abi));
       setContractL1L2(contract);
     } catch (e) {
-      setLoadAbiErrorL1L2(true);
       console.error(e);
     }
   };
 
-  const handleAddressOrABIL2L1 = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
+  const handleAddressOrABIL2L1 = async (): Promise<ContractInterface | void> => {
     setContractL2L1(undefined);
-    setLoadAbiErrorL2L1(false);
-
-    setAddressOrAbiL2L1("0xD4888faB8bd39A663B63161F5eE1Eae31a25B653");
-    setToAddressL2L1("0xA0c68C638235ee32657e8f720a23ceC1bFc77C77")
+    setToAddressL2L1(l2l1Address)
 
     if (!services.interfaceRepo) {
       return;
     }
     try {
-      const contract = await services.interfaceRepo.loadAbi("0xD4888faB8bd39A663B63161F5eE1Eae31a25B653");
+      const contract = await services.interfaceRepo.loadAbi(JSON.stringify(l2l1Abi));
       setContractL2L1(contract);
     } catch (e) {
-      setLoadAbiErrorL2L1(true);
       console.error(e);
     }
   };
@@ -664,12 +668,15 @@ const Dashboard = () => {
       return input.type;
     }
   };
+  
+  useEffect(() => {
+    handleAddressOrABIPos();
+    handleAddressOrABIPlasma();
+    handleAddressOrABIL1L2();
+    handleAddressOrABIL2L1();
+  }, [services])
 
-  // useEffect(() => {
-  //   handleAddressOrABIPos()
-  // }, [])
-
-  return (
+  return ( services && 
     <WidgetWrapper>
       <StyledTitle size="lg">Token Mapper</StyledTitle>
       <StyledText size="lg">
@@ -703,14 +710,6 @@ const Dashboard = () => {
         />
       )}
 
-      {/* ABI Input */}
-      <TextField value={addressOrAbiPos} label="Enter Contract Address or ABI" onChange={handleAddressOrABIPos} />
-      {loadAbiErrorPos && (
-        <Text color="error" size="md">
-          There was a problem trying to load the ABI for Pos
-        </Text>
-      )}
-
       {/* ABI Loaded */}
       {contractPos && (
         <>
@@ -727,20 +726,6 @@ const Dashboard = () => {
                 label="To Address"
                 // onChange={(e) => setToAddressPos(e.target.value)}
               />
-              <br />
-            </>
-          )}
-
-          {/* Input ETH value */}
-          {isValueInputVisiblePos() && (
-            <>
-              <TextField
-                style={{ marginTop: 10, marginBottom: 10 }}
-                value={valuePos}
-                label="ETH"
-                onChange={(e) => setValuePos(e.target.value)}
-              />
-
               <br />
             </>
           )}
@@ -881,14 +866,6 @@ const Dashboard = () => {
         />
       )}
 
-      {/* ABI Input */}
-      <TextField value={addressOrAbiPlasma} label="Enter Contract Address or ABI" onChange={handleAddressOrABIPlasma} />
-      {loadAbiErrorPlasma && (
-        <Text color="error" size="md">
-          There was a problem trying to load the ABI for Plasma
-        </Text>
-      )}
-
       {/* ABI Loaded */}
       {contractPlasma && (
         <>
@@ -905,20 +882,6 @@ const Dashboard = () => {
                 label="To Address"
                 onChange={(e) => setToAddressPlasma(e.target.value)}
               />
-              <br />
-            </>
-          )}
-
-          {/* Input ETH value */}
-          {isValueInputVisiblePlasma() && (
-            <>
-              <TextField
-                style={{ marginTop: 10, marginBottom: 10 }}
-                value={valuePlasma}
-                label="ETH"
-                onChange={(e) => setValuePlasma(e.target.value)}
-              />
-
               <br />
             </>
           )}
@@ -1056,14 +1019,6 @@ const Dashboard = () => {
         />
       )}
 
-      {/* ABI Input */}
-      <TextField value={addressOrAbiL1L2} label="Enter Contract Address or ABI" onChange={handleAddressOrABIL1L2} />
-      {loadAbiErrorL1L2 && (
-        <Text color="error" size="md">
-          There was a problem trying to load the ABI for L1L2
-        </Text>
-      )}
-
       {/* ABI Loaded */}
       {contractL1L2 && (
         <>
@@ -1080,20 +1035,6 @@ const Dashboard = () => {
                 label="To Address"
                 onChange={(e) => setToAddressL1L2(e.target.value)}
               />
-              <br />
-            </>
-          )}
-
-          {/* Input ETH value */}
-          {isValueInputVisibleL1L2() && (
-            <>
-              <TextField
-                style={{ marginTop: 10, marginBottom: 10 }}
-                value={valueL1L2}
-                label="ETH"
-                onChange={(e) => setValueL1L2(e.target.value)}
-              />
-
               <br />
             </>
           )}
@@ -1233,14 +1174,6 @@ const Dashboard = () => {
         />
       )}
 
-      {/* ABI Input */}
-      <TextField value={addressOrAbiL2L1} label="Enter Contract Address or ABI" onChange={handleAddressOrABIL2L1} />
-      {loadAbiErrorL2L1 && (
-        <Text color="error" size="md">
-          There was a problem trying to load the ABI for L2L1
-        </Text>
-      )}
-
       {/* ABI Loaded */}
       {contractL2L1 && (
         <>
@@ -1257,20 +1190,6 @@ const Dashboard = () => {
                 label="To Address"
                 onChange={(e) => setToAddressL2L1(e.target.value)}
               />
-              <br />
-            </>
-          )}
-
-          {/* Input ETH value */}
-          {isValueInputVisibleL2L1() && (
-            <>
-              <TextField
-                style={{ marginTop: 10, marginBottom: 10 }}
-                value={valueL2L1}
-                label="ETH"
-                onChange={(e) => setValueL2L1(e.target.value)}
-              />
-
               <br />
             </>
           )}
@@ -1392,4 +1311,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default PreSet;
